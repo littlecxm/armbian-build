@@ -246,7 +246,9 @@ create_sources_list()
 	display_alert "Adding Armbian repository and authentication key" "/etc/apt/sources.list.d/armbian.list" "info"
 	cp "${SRC}"/config/armbian.key "${basedir}"
 	chroot "${basedir}" /bin/bash -c "cat armbian.key | apt-key add - > /dev/null 2>&1"
-	rm "${basedir}"/armbian.key
+
+	# use of apt-key is deprecated since Jammy / Sid
+	mv "${basedir}"/armbian.key "${basedir}"/etc/apt/trusted.gpg.d/armbian.asc
 }
 
 
