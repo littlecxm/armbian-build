@@ -13,22 +13,20 @@
 # unless you want to kill your /etc/fstab and share your rootfs on NFS
 # without any access control
 
-fel_prepare_host()
-{
+fel_prepare_host() {
 	# Start rpcbind for NFS if inside docker container
 	[ "$(systemd-detect-virt)" == 'docker' ] && service rpcbind start
 
 	# remove and re-add NFS share
 	rm -f /etc/exports.d/armbian.exports
 	mkdir -p /etc/exports.d
-	echo "$FEL_ROOTFS *(rw,async,no_subtree_check,no_root_squash,fsid=root)" > /etc/exports.d/armbian.exports
+	echo "$FEL_ROOTFS *(rw,async,no_subtree_check,no_root_squash,fsid=root)" >/etc/exports.d/armbian.exports
 	# Start NFS server if inside docker container
 	[ "$(systemd-detect-virt)" == 'docker' ] && service nfs-kernel-server start
 	exportfs -ra
 }
 
-fel_prepare_target()
-{
+fel_prepare_target() {
 	if [[ -f $USERPATCHES_PATH/fel-boot.cmd ]]; then
 		display_alert "Using custom boot script" "userpatches/fel-boot.cmd" "info"
 		cp "$USERPATCHES_PATH"/fel-boot.cmd "${FEL_ROOTFS}"/boot/boot.cmd
@@ -41,16 +39,15 @@ fel_prepare_target()
 	sed -i "s#BRANCH#$BRANCH#" "${FEL_ROOTFS}"/boot/boot.cmd
 	sed -i "s#FEL_LOCAL_IP#$FEL_LOCAL_IP#" "${FEL_ROOTFS}"/boot/boot.cmd
 	sed -i "s#FEL_ROOTFS#$FEL_ROOTFS#" "${FEL_ROOTFS}"/boot/boot.cmd
-	mkimage -C none -A arm -T script -d "${FEL_ROOTFS}"/boot/boot.cmd "${FEL_ROOTFS}"/boot/boot.scr > /dev/null
+	mkimage -C none -A arm -T script -d "${FEL_ROOTFS}"/boot/boot.cmd "${FEL_ROOTFS}"/boot/boot.scr >/dev/null
 
 	# kill /etc/fstab on target
-	echo > "${FEL_ROOTFS}"/etc/fstab
-	echo "/dev/nfs / nfs defaults 0 0" >> "${FEL_ROOTFS}"/etc/fstab
-	echo "tmpfs /tmp tmpfs defaults,nosuid 0 0" >> "${FEL_ROOTFS}"/etc/fstab
+	echo >"${FEL_ROOTFS}"/etc/fstab
+	echo "/dev/nfs / nfs defaults 0 0" >>"${FEL_ROOTFS}"/etc/fstab
+	echo "tmpfs /tmp tmpfs defaults,nosuid 0 0" >>"${FEL_ROOTFS}"/etc/fstab
 }
 
-fel_load()
-{
+fel_load() {
 	# update each time in case boot/script.bin link was changed in multi-board images
 	local dtb_file
 	if [[ -n $FEL_DTB_FILE ]]; then

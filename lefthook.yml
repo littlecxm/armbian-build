@@ -1,0 +1,15 @@
+commit-msg:
+    scripts:
+        "lib/verify-commit-msg":
+            runner: bash
+
+pre-commit:
+    commands:
+        check:
+            files: git diff --name-only HEAD
+            glob: "{*.sh}"
+            run: shellcheck {files} --severity=warning
+        format:
+            files: git diff --name-only HEAD
+            glob: "{*.sh,*.inc}"
+            run: shfmt -w {files}
