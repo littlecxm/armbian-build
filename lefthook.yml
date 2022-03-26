@@ -1,6 +1,6 @@
 commit-msg:
     scripts:
-        "lib/verify-commit-msg":
+        "verify-commit-msg":
             runner: bash
 
 pre-commit:
