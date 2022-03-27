@@ -6,10 +6,8 @@ commit-msg:
 pre-commit:
     commands:
         check:
-            files: git diff --name-only HEAD
             glob: "{*.sh}"
-            run: shellcheck {files} --severity=warning
+            run: shellcheck {staged_files} --severity=warning
         format:
-            files: git diff --name-only HEAD
             glob: "{*.sh,*.inc}"
-            run: shfmt -w {files}
+            run: shfmt -w {staged_files}
