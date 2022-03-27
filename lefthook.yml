@@ -1,13 +1,11 @@
-commit-msg:
+pre-commit:
     scripts:
         "verify-commit-msg":
             runner: bash
-
-pre-commit:
     commands:
-        check:
-            glob: "{*.sh}"
-            run: shellcheck {staged_files} --severity=warning
         format:
-            glob: "{*.sh,*.inc}"
+            glob: "*.{sh,inc}"
             run: shfmt -w {staged_files}
+        check:
+            glob: "*.{sh}"
+            run: shellcheck {staged_files}
